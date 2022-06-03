@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { Keypair, Transaction } from '@solana/web3.js'
 import { findReference, FindReferenceError } from '@solana/pay'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { InfinitySpin } from 'react-loader-spinner'
 import IPFSDownload from './IpfsDownload'
+import { addOrder, hasPurchased, fetchItem } from '../lib/api'
 
 const STATUS = {
   Initial: 'Initial',
@@ -16,7 +17,8 @@ export default function Buy({ itemID }) {
   const { publicKey, sendTransaction } = useWallet()
   const orderID = useMemo(() => Keypair.generate().publicKey, []) // Public key used to identify the order
 
-  const [loading, setLoading] = useState(false)
+  const [item, setItem] = useState(null) // IPFS hash & filename of the purchased item
+  const [loading, setLoading] = useState(false) // Loading state of all above
   const [status, setStatus] = useState(STATUS.Initial) // Tracking transaction status
 
   const order = useMemo(
@@ -28,6 +30,7 @@ export default function Buy({ itemID }) {
     [publicKey, orderID, itemID]
   )
 
+  // Fetch the transaction object from the server (done to avoid tampering)
   const processTransaction = async () => {
     setLoading(true)
     const txResponse = await fetch('../api/createTransaction', {
@@ -41,7 +44,7 @@ export default function Buy({ itemID }) {
 
     const tx = Transaction.from(Buffer.from(txData.transaction, 'base64'))
     console.log('Tx data is', tx)
-
+    // Attempt to send the transaction to the network
     try {
       const txHash = await sendTransaction(tx, connection)
       console.log(
@@ -54,6 +57,21 @@ export default function Buy({ itemID }) {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    // Check if this address already has already purchased this item
+    // If so, fetch the item and set paid to true
+    // Async function to avoid blocking the UI
+    async function checkPurchased() {
+      const purchased = await hasPurchased(publicKey, itemID)
+      if (purchased) {
+        setStatus(STATUS.Paid)
+        const item = await fetchItem(itemID)
+        setItem(item)
+      }
+    }
+    checkPurchased()
+  }, [publicKey, itemID])
 
   useEffect(() => {
     // Check if transaction was confirmed
@@ -69,6 +87,7 @@ export default function Buy({ itemID }) {
           ) {
             clearInterval(interval)
             setStatus(STATUS.Paid)
+            addOrder(order)
             setLoading(false)
             alert('Thank you for your purchase!')
           }
@@ -84,6 +103,15 @@ export default function Buy({ itemID }) {
       return () => {
         clearInterval(interval)
       }
+    }
+
+    async function getItem(itemID) {
+      const item = await fetchItem(itemID)
+      setItem(item)
+    }
+
+    if (status === STATUS.Paid) {
+      getItem(itemID)
     }
   }, [status])
 
@@ -101,12 +129,9 @@ export default function Buy({ itemID }) {
 
   return (
     <div>
-      {status === STATUS.Paid ? (
-        <IPFSDownload
-          filename='emojis.zip'
-          hash='QmWWH69mTL66r3H8P4wUn24t1L5pvdTJGUTKBqT11KCHS5'
-          cta='Download emojis'
-        />
+      {/* Display either buy button or IPFSDownload component based on if Hash exists */}
+      {item ? (
+        <IPFSDownload hash={item.hash} filename={item.filename} />
       ) : (
         <button
           disabled={loading}

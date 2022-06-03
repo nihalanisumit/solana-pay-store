@@ -88,6 +88,8 @@ const createTransaction = async (req, res) => {
     })
     const base64 = serializedTransaction.toString('base64')
 
+    console.log('generated transaction', base64)
+
     res.status(200).json({
       transaction: base64,
     })
