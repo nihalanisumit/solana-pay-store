@@ -80,6 +80,12 @@ const createTransaction = async (req, res) => {
       usdcMint.decimals // The token could have any number of decimals
     )
 
+    transferInstruction.keys.push({
+      pubkey: new PublicKey(orderID),
+      isSigner: false,
+      isWritable: false,
+    })
+
     tx.add(transferInstruction)
 
     // Formatting our transaction
