@@ -21,6 +21,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.1.2",
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
     "@solana/pay": "^0.2.0",
     "@solana/wallet-adapter-base": "^0.9.4",
     "@solana/wallet-adapter-react": "^0.15.3",
@@ -29,8 +32,10 @@
     "@solana/web3.js": "^1.36.0",
     "bignumber.js": "^9.0.2",
     "crypto-js": "^4.1.1",
+    "framer-motion": "^6.3.10",
     "ipfs-core": "^0.14.3",
     "ipfs-http-client": "^56.0.3",
+    "lodash": "^4.17.21",
     "next": "^12.1.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

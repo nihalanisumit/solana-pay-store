@@ -7,40 +7,41 @@ import { toast } from 'react-hot-toast'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { shortenAddress } from '../lib/util'
-
-// Constants
-const TWITTER_HANDLE = 'nihalanisumit'
-const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`
+import Header from '../components/Header'
+import Footer from '../components/footer'
 
 const App = () => {
   const { publicKey } = useWallet()
-  const isOwner = publicKey
-    ? publicKey.toString() === process.env.NEXT_PUBLIC_OWNER_PUBLIC_KEY
-    : false
 
-  const [creating, setCreating] = useState(false)
   const [products, setProducts] = useState([])
+  const [creating, setCreating] = useState(false)
 
-  const renderNotConnectedContainer = () => (
-    <div>
-      <img
-        src='https://media.giphy.com/media/eSwGh3YK54JKU/giphy.gif'
-        alt='emoji'
-      />
+  function NotConnectedContainer() {
+    return (
+      <div>
+        <img src="https://media.giphy.com/media/eSwGh3YK54JKU/giphy.gif" alt="emoji" />
 
-      <div className='button-container'>
-        <WalletMultiButton className='cta-button connect-wallet-button' />
+        <div className="button-container">
+          <WalletMultiButton className="cta-button connect-wallet-button" />
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
+  function ItemBuyContainer() {
+    return (
+      <div className="products-container">
+        {products.map((product) => (
+          <Product key={product.id} product={product} />
+        ))}
+      </div>
+    )
+  }
 
   useEffect(() => {
     if (publicKey) {
       const base58 = publicKey.toBase58()
 
-      toast.success(
-        `connected to wallet: ${shortenAddress({ address: base58 })}`
-      )
+      toast.success(`connected to wallet: ${shortenAddress({ address: base58 })}`)
     }
   }, [publicKey])
 
@@ -55,53 +56,19 @@ const App = () => {
     }
   }, [publicKey])
 
-  const renderItemBuyContainer = () => (
-    <div className='products-container'>
-      {products.map((product) => (
-        <Product key={product.id} product={product} />
-      ))}
-    </div>
-  )
-
   return (
-    <div className='App'>
+    <div className="App">
       <HeadComponent />
-      <div className='container'>
-        <header className='header-container'>
-          <p className='header'> 😳 Buildspace Emoji Store 😈</p>
-          <p className='sub-text'>
-            The only emoji store that accepts shitcoins
-          </p>
-
-          {isOwner && (
-            <button
-              className='create-product-button'
-              onClick={() => setCreating(!creating)}
-            >
-              {creating ? 'Close' : 'Create Product'}
-            </button>
-          )}
+      <Header creating={creating} setCreating={setCreating} />
+      <div className="container">
+        <header className="header-container">
+          <p className="header"> 😳 Solana Emoji Store 😈</p>
+          <p className="sub-text">Purchase emoji packs using USDC</p>
         </header>
 
-        <main>
-          {creating && <CreateProduct />}
-          {publicKey ? renderItemBuyContainer() : renderNotConnectedContainer()}
-        </main>
-
-        <div className='footer-container'>
-          <img
-            alt='Twitter Logo'
-            className='twitter-logo'
-            src='twitter-logo.svg'
-          />
-          <a
-            className='footer-text'
-            href={TWITTER_LINK}
-            target='_blank'
-            rel='noreferrer'
-          >{`built by @${TWITTER_HANDLE}`}</a>
-        </div>
+        {creating ? <CreateProduct /> : publicKey ? <ItemBuyContainer /> : <NotConnectedContainer />}
       </div>
+      <Footer />
     </div>
   )
 }
