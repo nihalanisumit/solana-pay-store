@@ -5,6 +5,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { InfinitySpin } from 'react-loader-spinner'
 import IPFSDownload from './IpfsDownload'
 import { addOrder, hasPurchased, fetchItem } from '../lib/api'
+import toast from 'react-hot-toast'
 
 const STATUS = {
   Initial: 'Initial',
@@ -89,7 +90,7 @@ export default function Buy({ itemID }) {
             setStatus(STATUS.Paid)
             addOrder(order)
             setLoading(false)
-            alert('Thank you for your purchase!')
+            toast.success('Thank you for your purchase!')
           }
         } catch (e) {
           if (e instanceof FindReferenceError) {

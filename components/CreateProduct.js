@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { create } from 'ipfs-http-client'
 import styles from '../styles/CreateProduct.module.css'
+import toast from 'react-hot-toast'
 
 const client = create('https://ipfs.infura.io:5001/api/v0')
 
@@ -41,9 +42,9 @@ const CreateProduct = () => {
       })
       const data = await response.json()
       if (response.status === 200) {
-        alert('Product added!')
+        toast.success('Product added!')
       } else {
-        alert('Unable to add product: ', data.error)
+        toast.error('Unable to add product: ', data.error)
       }
     } catch (error) {
       console.log(error)

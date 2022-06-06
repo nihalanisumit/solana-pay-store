@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react'
 import CreateProduct from '../components/CreateProduct'
 import Product from '../components/Product'
 import HeadComponent from '../components/Head'
+import { toast } from 'react-hot-toast'
 
 import { useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { shortenAddress } from '../lib/util'
 
 // Constants
 const TWITTER_HANDLE = 'nihalanisumit'
@@ -31,6 +33,16 @@ const App = () => {
       </div>
     </div>
   )
+
+  useEffect(() => {
+    if (publicKey) {
+      const base58 = publicKey.toBase58()
+
+      toast.success(
+        `connected to wallet: ${shortenAddress({ address: base58 })}`
+      )
+    }
+  }, [publicKey])
 
   useEffect(() => {
     if (publicKey) {
