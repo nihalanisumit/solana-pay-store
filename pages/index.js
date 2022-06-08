@@ -14,14 +14,14 @@ const App = () => {
   const { publicKey } = useWallet()
 
   const [products, setProducts] = useState([])
-  const [creating, setCreating] = useState(false)
+  const [open, setOpenModal] = useState(false)
 
   function NotConnectedContainer() {
     return (
       <div>
         <img src="https://media.giphy.com/media/eSwGh3YK54JKU/giphy.gif" alt="emoji" />
 
-        <div className="button-container">
+        <div className="button-container" style={{ marginTop: '20px' }}>
           <WalletMultiButton className="cta-button connect-wallet-button" />
         </div>
       </div>
@@ -59,14 +59,14 @@ const App = () => {
   return (
     <div className="App">
       <HeadComponent />
-      <Header creating={creating} setCreating={setCreating} />
+      <Header open={open} setOpenModal={setOpenModal} />
       <div className="container">
         <header className="header-container">
           <p className="header"> 😳 Solana Emoji Store 😈</p>
           <p className="sub-text">Purchase emoji packs using USDC</p>
         </header>
-
-        {creating ? <CreateProduct /> : publicKey ? <ItemBuyContainer /> : <NotConnectedContainer />}
+        <CreateProduct open={open} setOpenModal={setOpenModal} />
+        {publicKey ? <ItemBuyContainer /> : <NotConnectedContainer />}
       </div>
       <Footer />
     </div>

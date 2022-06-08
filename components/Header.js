@@ -64,7 +64,7 @@ function Auth(props) {
         ) : (
           <div className="button-container">
             <button className="cta-button connect-wallet-button" onClick={disconnectWallet}>
-              disconnect{' '}
+              disconnect
             </button>
           </div>
         )}
@@ -73,7 +73,7 @@ function Auth(props) {
   )
 }
 
-function Header({ creating, setCreating, ...props }) {
+function Header({ open, setOpenModal, ...props }) {
   const router = useRouter()
   const { publicKey } = useWallet()
 
@@ -88,17 +88,22 @@ function Header({ creating, setCreating, ...props }) {
   }
 
   return (
-    <Box
-      pt={{ base: 5, lg: 8 }}
-      pb={{ base: 5, lg: 10 }}
-      px={{ base: 4, lg: '8vw', xl: '12vw', '2xl': '15vw', '3xl': '20vw' }}
-      {...props}
-      data-test="cryptoisreal"
-    >
-      <Stack direction="row" align="center" justify="flex-end" spacing={8}>
+    <Box pt={{ base: 5, lg: 8 }} pb={{ base: 5, lg: 10 }} px="10vw" {...props} data-test="cryptoisreal">
+      <Stack direction="row" align="center" justify="flex-end" spacing={12}>
+        <Text mr={'auto'} color="white" fontSize={rem(20)} fontWeight="bold">
+          😳 Solana Emoji Store 😈
+        </Text>
         {isOwner && (
-          <Button color="white" bg="none" border="none" fontSize={rem(18)} onClick={() => setCreating(!creating)}>
-            {creating ? 'Close' : 'Create Product'}
+          <Button
+            color="white"
+            bg="none"
+            border="none"
+            fontSize={rem(18)}
+            m={0}
+            p={0}
+            onClick={() => setOpenModal(!open)}
+          >
+            Create Product
           </Button>
         )}
 

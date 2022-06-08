@@ -7,5 +7,14 @@
     "image_url": "https://i.imgur.com/rVD8bjt.png",
     "filename": "Emojis.zip",
     "hash": "QmWWH69mTL66r3H8P4wUn24t1L5pvdTJGUTKBqT11KCHS5"
+  },
+  {
+    "id": 2,
+    "name": "Sad Life",
+    "price": "0.1",
+    "image_url": "https://freepngimg.com/thumb/sad_emoji/36900-6-sad-emoji-transparent-background-thumb.png",
+    "description": "Sad life emojis - three really sad emojis pack just at $0.1",
+    "filename": "sad-emojis.zip",
+    "hash": "QmXcuKSXB8tcBVNFH6L1BzXQoZBHqNv2etKcdG6BgBJRZS"
   }
 ]
